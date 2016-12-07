@@ -9,6 +9,35 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+<!--Make a new table that hold sorting options above the given list-->
+        <!--ASK MR.BARNES ABOUT ADDING SPACES BETWEEN SAID TABLE HEADERS BUT OTHER THAN THAT SORT FOR EACH FIELD IS WORKING-->
+<table>
+    <tr>
+       <!--HyperLink for sorting by name-->
+        <th>
+            @Html.ActionLink("SortName", "Index", new { sortOrder = ViewBag.SortByNameP });
+        </th>
+        <!--HyperLink for sorting by pack-->
+        <th>
+            @Html.ActionLink("SortPack", "Index", new { sortOrder = ViewBag.SortByPackP });
+        </th>
+        <!--HyperLink for sorting by price-->
+        <th>
+            @Html.ActionLink("SortPrice", "Index", new { sortOrder = ViewBag.SortByPriceP });
+        </th>
+        <!--HyperLink for sorting by name-->
+        <th>
+            @Html.ActionLink("SortActive", "Index", new { sortOrder = ViewBag.SortByActiveP });
+        </th>
+        <!--HyperLink for not sorting-->
+        <th>
+            @Html.ActionLink("Original", "Index", new { sortOrder = ViewBag.NoSortP });
+        </th>
+    </tr>
+</table>
+
+
 <table class="table">
     <tr>
         <th>

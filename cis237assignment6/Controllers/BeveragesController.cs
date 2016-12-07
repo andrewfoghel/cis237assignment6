@@ -14,10 +14,56 @@ namespace cis237assignment6.Controllers
     {
         private BeverageAFoghelEntities db = new BeverageAFoghelEntities();
 
+        //Remake Index so that it has a sorting option bar, and when clicked will sort, first by ascending followed by descending 
+            //Must also create hyperlinks for given sorting techniques 
         // GET: Beverages
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder)
         {
-            return View(db.Beverages.ToList());
+            ViewBag.NoSortP = String.IsNullOrEmpty(sortOrder) ? "Original" : "";
+            ViewBag.SortByNameP = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewBag.SortByPackP = sortOrder == "Pack" ? "pack_desc" : "Pack";
+            ViewBag.SortByPriceP = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewBag.SortByActiveP = sortOrder == "Active" ? "active_desc" : "Active";
+
+            //var to hold list in to sort but not change database
+            var drinks = from x in db.Beverages
+                         select x;
+
+            //switch statement using sortOrder to check for nulls, and decide which sort does what 
+            switch (sortOrder)
+            {
+                case "Name":
+                    drinks = drinks.OrderBy(x => x.name);
+                    break;
+                case "name_desc":
+                    drinks = drinks.OrderByDescending(x => x.name);
+                    break;
+                case "Pack":
+                    drinks = drinks.OrderBy(x => x.pack);
+                    break;
+                case "pack_desc":
+                    drinks = drinks.OrderByDescending(x => x.pack);
+                    break;
+                case "Price":
+                    drinks = drinks.OrderBy(x => x.price);
+                    break;
+                case "price_desc":
+                    drinks = drinks.OrderByDescending(x => x.price);
+                    break;
+                case "Active":
+                    drinks = drinks.OrderBy(x => x.active);
+                    break;
+                case "active_desc":
+                    drinks = drinks.OrderByDescending(x => x.active);
+                    break;
+                case "Original":
+                    drinks = db.Beverages;
+                    break;
+                default:
+                    break;
+            }
+            //return newly loaded array, now to go set hyperlinks in the BeveragesController index view
+            return View(drinks.ToList());
         }
 
         // GET: Beverages/Details/5
