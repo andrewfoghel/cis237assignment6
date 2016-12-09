@@ -10,24 +10,45 @@ using cis237assignment6.Models;
 
 namespace cis237assignment6.Controllers
 {
+    [Authorize]
     public class BeveragesController : Controller
     {
         private BeverageAFoghelEntities db = new BeverageAFoghelEntities();
 
         //Remake Index so that it has a sorting option bar, and when clicked will sort, first by ascending followed by descending 
-            //Must also create hyperlinks for given sorting techniques 
+        //Must also create hyperlinks for given sorting techniques 
         // GET: Beverages
-        public ActionResult Index(string sortOrder)
+        public ActionResult Index(string sortOrder, string searchStringName, string searchStringPack, string searchStringPrice)
         {
+
+            //SortMethod view bags
             ViewBag.NoSortP = String.IsNullOrEmpty(sortOrder) ? "Original" : "";
             ViewBag.SortByNameP = sortOrder == "Name" ? "name_desc" : "Name";
             ViewBag.SortByPackP = sortOrder == "Pack" ? "pack_desc" : "Pack";
             ViewBag.SortByPriceP = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.SortByActiveP = sortOrder == "Active" ? "active_desc" : "Active";
 
+
+
             //var to hold list in to sort but not change database
             var drinks = from x in db.Beverages
                          select x;
+            if (!String.IsNullOrEmpty(searchStringName))
+            {
+                drinks = drinks.Where(s => s.name.ToUpper().Contains(searchStringName.ToUpper()));
+                                    
+            }
+            if (!String.IsNullOrEmpty(searchStringPack))
+            {
+                drinks = drinks.Where(s => s.pack.ToUpper().Contains(searchStringPack.ToUpper()));
+            }
+            if (!String.IsNullOrEmpty(searchStringPack))
+            {
+                drinks = drinks.Where(s => s.price <= int.Parse(searchStringPrice));
+            }
+
+
+
 
             //switch statement using sortOrder to check for nulls, and decide which sort does what 
             switch (sortOrder)
@@ -65,6 +86,8 @@ namespace cis237assignment6.Controllers
             //return newly loaded array, now to go set hyperlinks in the BeveragesController index view
             return View(drinks.ToList());
         }
+
+
 
         // GET: Beverages/Details/5
         public ActionResult Details(string id)
@@ -158,6 +181,30 @@ namespace cis237assignment6.Controllers
             Beverage beverage = db.Beverages.Find(id);
             db.Beverages.Remove(beverage);
             db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        //Filter Method
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Filter()
+        {
+            //Get the form data that was sent out of the Request object
+            //the string that is used as a key to get the data matches the name
+            //propertry of the form control. (for us this is the first parameter)
+            String name = Request.Form.Get("name");
+            String pack = Request.Form.Get("pack");
+            String price = Request.Form.Get("price");
+
+            //Store the form data into the session so that it can be retrived later
+            //on to filter the data
+            Session["name"] = name;
+            Session["pack"] = pack;
+            Session["price"] = price;
+
+
+
+            //Redirect the user to the index page. We will do the work of actually filtering the list in the index method
             return RedirectToAction("Index");
         }
 
