@@ -11,6 +11,9 @@
 {
     @Html.AntiForgeryToken()
     
+    <!--Adding DataAnnotations will serve two purposes: It will help give us the validation logic that we need, and it will also gives those helpers the 
+        valiation they need to render the proper html -> Going into Models>Drinks.cs-->
+
     <div class="form-horizontal">
         <h4>Beverage</h4>
         <hr />
@@ -68,7 +71,9 @@
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
-
+@* Client side Validation, commented out because it causes the imparitive logic not to work*@
+@*
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+*@

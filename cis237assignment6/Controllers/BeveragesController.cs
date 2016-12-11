@@ -18,7 +18,10 @@ namespace cis237assignment6.Controllers
         //Remake Index so that it has a sorting option bar, and when clicked will sort, first by ascending followed by descending 
         //Must also create hyperlinks for given sorting techniques 
         // GET: Beverages
-        public ActionResult Index(string sortOrder, string searchStringName, string searchStringPack, string searchStringPrice)
+        //My way
+        //     public ActionResult Index(string sortOrder, string searchStringName, string searchStringPack, string searchStringPrice)
+        //Class way
+        public ActionResult Index(string sortOrder)
         {
 
             //SortMethod view bags
@@ -29,25 +32,49 @@ namespace cis237assignment6.Controllers
             ViewBag.SortByActiveP = sortOrder == "Active" ? "active_desc" : "Active";
 
 
+//My way
 
             //var to hold list in to sort but not change database
             var drinks = from x in db.Beverages
                          select x;
-            if (!String.IsNullOrEmpty(searchStringName))
-            {
-                drinks = drinks.Where(s => s.name.ToUpper().Contains(searchStringName.ToUpper()));
-                                    
-            }
-            if (!String.IsNullOrEmpty(searchStringPack))
-            {
-                drinks = drinks.Where(s => s.pack.ToUpper().Contains(searchStringPack.ToUpper()));
-            }
-            if (!String.IsNullOrEmpty(searchStringPack))
-            {
-                drinks = drinks.Where(s => s.price <= int.Parse(searchStringPrice));
-            }
+
+            /*
+                        if (!String.IsNullOrEmpty(searchStringName))
+                        {
+                            drinks = drinks.Where(s => s.name.ToUpper().Contains(searchStringName.ToUpper()));
+                        }
+                        if (!String.IsNullOrEmpty(searchStringPack))
+                        {
+                            drinks = drinks.Where(s => s.pack.ToUpper().Contains(searchStringPack.ToUpper()));
+                        }
+                        if (!String.IsNullOrEmpty(searchStringPrice))
+                        {
+                            drinks = drinks.Where(s => s.price.ToString().Contains(searchStringPrice.ToUpper()));
+                        }
+
+            */
+
+            string filterName = "";
+            string filterPack = "";
+            string filterPrice = "";
 
 
+            if(Session["name"] != null && !String.IsNullOrWhiteSpace((string)Session["name"]))
+            {
+                filterName = (string)Session["name"];
+            }
+            if (Session["pack"] != null && !String.IsNullOrWhiteSpace((string)Session["pack"]))
+            {
+                filterPack = (string)Session["pack"];
+            }
+            if (Session["price"] != null && !String.IsNullOrWhiteSpace((string)Session["price"]))
+            {
+                filterPrice = (string)Session["price"];
+            }
+
+            drinks = drinks.Where(drink => drink.name.Contains(filterName) &&
+                                                                  drink.pack.Contains(filterPack));
+                                                           //       drink.price <= decimal.Parse(filterPrice));
 
 
             //switch statement using sortOrder to check for nulls, and decide which sort does what 
@@ -87,7 +114,8 @@ namespace cis237assignment6.Controllers
             return View(drinks.ToList());
         }
 
-
+        //HOW TO DO VALIDATION FOR FILTER SINCE IT'S IN THE INDEX PART RATHER THAN THE FILTER PART, WHICH IS NOT EVEN BEING USED AT THE MOMENT. 
+        //MOREOVER HOW WOULD I GO ABOUT USING THAT INSTEAD OF THE FILTER?
 
         // GET: Beverages/Details/5
         public ActionResult Details(string id)
@@ -105,6 +133,7 @@ namespace cis237assignment6.Controllers
         }
 
         // GET: Beverages/Create
+        [HttpGet]
         public ActionResult Create()
         {
             return View();
@@ -117,14 +146,49 @@ namespace cis237assignment6.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,name,pack,price,active")] Beverage beverage)
         {
+   
+            //Server Side Validation check
+            //Imparitive logic check using if else statement
+                //Note:The problem is that this logic is repeated requiring updates in many places if the logic changes, which it inevitably will
+                //But the .NET framework provides a more declaritive approach called DataAnnotationAttributes, which applies ASP.NET MVC with all the
+                //nessacary metadata it needs to validate the model in one central place, But I wasn't able to figure it out
+            if (string.IsNullOrWhiteSpace(beverage.id))
+            {
+                //Invalid
+                //Keep track of failures and then tell MVC about them adding them to the model state dictionary
+                    //Note: you can then refer to this dictionary later to see if any of these errors were registered by using the ModelState.IsValid function
+                    //to return the user back to said view so that they can fix their mistakes.
+                ModelState.AddModelError("id", "Name is required");
+            } else if (beverage.id.Length < 3 || beverage.id.Length > 10)
+            {
+                //Also Invalid
+                ModelState.AddModelError("id", "Id must between 3 and 10 characters");
+            }
+
+            if (string.IsNullOrWhiteSpace(beverage.name))
+            {
+                ModelState.AddModelError("name","Name is requried");
+            }
+
+            if (string.IsNullOrWhiteSpace(beverage.pack))
+            {
+                ModelState.AddModelError("pack", "pack is requried");
+            }
+
+            if (string.IsNullOrWhiteSpace(beverage.price.ToString()))
+            {
+                ModelState.AddModelError("price", "price is requried");
+            }
+
+            //Now we can refer to the errors in the view using the HTML.ValidationSummary
             if (ModelState.IsValid)
             {
                 db.Beverages.Add(beverage);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
-            return View(beverage);
+            //If not valid then returns you to the original view for editing
+            return Create();
         }
 
         // GET: Beverages/Edit/5
@@ -149,13 +213,30 @@ namespace cis237assignment6.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id,name,pack,price,active")] Beverage beverage)
         {
+
+            if (string.IsNullOrWhiteSpace(beverage.name))
+            {
+                ModelState.AddModelError("name", "Name is requried");
+            }
+
+            if (string.IsNullOrWhiteSpace(beverage.pack))
+            {
+                ModelState.AddModelError("pack", "pack is requried");
+            }
+
+            if (string.IsNullOrWhiteSpace(beverage.price.ToString()))
+            {
+                ModelState.AddModelError("price", "price is requried");
+            }
+
+
             if (ModelState.IsValid)
             {
                 db.Entry(beverage).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(beverage);
+            return Edit(beverage.id);
         }
 
         // GET: Beverages/Delete/5
@@ -184,28 +265,41 @@ namespace cis237assignment6.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public ActionResult Filter()
+        {
+            return View();
+        }
         //Filter Method
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Filter()
+        public ActionResult Filter(String name, String pack, String price)
         {
             //Get the form data that was sent out of the Request object
             //the string that is used as a key to get the data matches the name
             //propertry of the form control. (for us this is the first parameter)
-            String name = Request.Form.Get("name");
-            String pack = Request.Form.Get("pack");
-            String price = Request.Form.Get("price");
-
+         name = Request.Form.Get("name");
+         pack = Request.Form.Get("pack");
+         price = Request.Form.Get("price");
+            
             //Store the form data into the session so that it can be retrived later
             //on to filter the data
             Session["name"] = name;
             Session["pack"] = pack;
             Session["price"] = price;
 
+            if(!String.IsNullOrWhiteSpace((string)Session["name"]) && Session["name"] != null)
+            {
+                ModelState.AddModelError("name", "Please enter valid name");
+            }
 
 
             //Redirect the user to the index page. We will do the work of actually filtering the list in the index method
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
+            return Filter();
         }
 
         protected override void Dispose(bool disposing)
@@ -218,3 +312,6 @@ namespace cis237assignment6.Controllers
         }
     }
 }
+
+//Filter validation not working... Having trouble using data annotations, in videos I've watched they have a class in the models folder that 
+//contains all fields and getter and setter methods, I can't find that here

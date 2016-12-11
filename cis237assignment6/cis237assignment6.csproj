@@ -224,6 +224,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Beverages.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Drinks.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

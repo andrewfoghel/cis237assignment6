@@ -6,10 +6,11 @@
 
 <h2>Index</h2>
 
+
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-
+@*My Way
 @using (Html.BeginForm())
 {
  <p>
@@ -25,6 +26,34 @@
     <input type="submit" value="Search" />
 </p>
 }
+*@
+
+@*Trying the way we did in class*@
+<div class="form-group">
+    <fieldset>
+        <legend>Search Filter</legend>
+        @*Start the C# part to do the rendering of the html*@
+        @{
+            using (Html.BeginForm("Filter", "Beverages", FormMethod.Post, new { @class = "form-inline" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <label for="name">Name</label>
+                @Html.TextBox("name", (string)ViewBag.filterName)
+
+                <label for="pack">Pack</label>
+                @Html.TextBox("pack", (string)ViewBag.filterPack)
+
+                <label for="price">Price</label>
+                @Html.TextBox("price", (string)ViewBag.filterPice)
+                <br />
+                <input type="submit" value="Filter" class="btn btn-info pull-right" />
+            }
+        }
+    </fieldset>
+</div>
+<br />
+<br />
 
 
 <!--Make a new table that hold sorting options above the given list-->
