@@ -4,12 +4,17 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2 style="font-family:initial; color: wheat">Beverages</h2>
 
 
-<p>
-    @Html.ActionLink("Create New", "Create")
+<p style="font-family: initial">
+    <a href="/Beverages/Create" style="color: wheat">Create New</a>
 </p>
+
+
+
+
+
 @*My Way
 @using (Html.BeginForm())
 {
@@ -29,25 +34,22 @@
 *@
 
 @*Trying the way we did in class*@
-<div class="form-group">
+<div class="form-group" style="font-family:initial;color:white">
     <fieldset>
-        <legend>Search Filter</legend>
+        <legend style="font-family: initial; color:wheat">Search Filter</legend>
         @*Start the C# part to do the rendering of the html*@
         @{
             using (Html.BeginForm("Filter", "Beverages", FormMethod.Post, new { @class = "form-inline" }))
             {
                 @Html.AntiForgeryToken()
-
                 <label for="name">Name</label>
                 @Html.TextBox("name", (string)ViewBag.filterName)
-
                 <label for="pack">Pack</label>
                 @Html.TextBox("pack", (string)ViewBag.filterPack)
-
                 <label for="price">Price</label>
                 @Html.TextBox("price", (string)ViewBag.filterPice)
                 <br />
-                <input type="submit" value="Filter" class="btn btn-info pull-right" />
+                <input type = "submit" value = "Filter" class="btn btn-info pull-right" style="font-family: initial;color:white"/>
             }
         }
     </fieldset>
@@ -60,23 +62,23 @@
 <table class="table">
     <tr>
        <!--HyperLink for sorting by name-->
-        <th>
+        <th style="font-family:initial; color:wheat">
             @Html.ActionLink("SortName", "Index", new { sortOrder = ViewBag.SortByNameP })
         </th>
         <!--HyperLink for sorting by pack-->
-        <th>
+        <th style="font-family:initial; color:wheat">
             @Html.ActionLink("SortPack", "Index", new { sortOrder = ViewBag.SortByPackP })
         </th>
         <!--HyperLink for sorting by price-->
-        <th>
-            @Html.ActionLink("SortPrice", "Index", new { sortOrder = ViewBag.SortByPriceP })
-        </th>
+        <th style="font-family:initial; color:wheat">
+    @Html.ActionLink("SortPrice", "Index", new { sortOrder = ViewBag.SortByPriceP })
+</th>
         <!--HyperLink for sorting by name-->
-        <th>
+        <th style="font-family:initial; color:wheat">
             @Html.ActionLink("SortActive", "Index", new { sortOrder = ViewBag.SortByActiveP })
         </th>
         <!--HyperLink for not sorting-->
-        <th>
+        <th style="font-family:initial; color:wheat">
             @Html.ActionLink("Original", "Index", new { sortOrder = ViewBag.NoSortP })
         </th>
     </tr>
@@ -85,41 +87,43 @@
 
 <table class="table">
     <tr>
-        <th>
+        <th style="font-family:initial; color:white">
             @Html.DisplayNameFor(model => model.name)
         </th>
-        <th>
+        <th style="font-family:initial; color:white">
             @Html.DisplayNameFor(model => model.pack)
         </th>
-        <th>
+        <th style="font-family:initial; color:white">
             @Html.DisplayNameFor(model => model.price)
         </th>
-        <th>
+        <th style="font-family:initial; color:white">
             @Html.DisplayNameFor(model => model.active)
         </th>
-        <th></th>
     </tr>
-
+    </table>
+<table class="table table-hover">
 @foreach (var item in Model) {
-    <tr>
-        <td>
+
+      <tr>
+        <td style="font-family:initial;color:wheat">
             @Html.DisplayFor(modelItem => item.name)
         </td>
-        <td>
+        <td style="font-family:initial;color:wheat">
             @Html.DisplayFor(modelItem => item.pack)
         </td>
-        <td>
+        <td style="font-family:initial;color:wheat">
             @Html.DisplayFor(modelItem => item.price)
         </td>
-        <td>
+        <td style="font-family:initial;color:wheat">
             @Html.DisplayFor(modelItem => item.active)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        <td style="font-family:initial;color:wheat">
+            @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.id })
         </td>
     </tr>
 }
 
 </table>
+

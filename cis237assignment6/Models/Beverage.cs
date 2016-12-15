@@ -11,13 +11,20 @@ namespace cis237assignment6.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Beverage
     {
+        //[Required] is a data annotation that requires input for the fields
+        [Required]
         public string id { get; set; }
+        [Required]
         public string name { get; set; }
+        [Required]
         public string pack { get; set; }
+        [Required]
         public decimal price { get; set; }
+        
         public bool active { get; set; }
     }
 }

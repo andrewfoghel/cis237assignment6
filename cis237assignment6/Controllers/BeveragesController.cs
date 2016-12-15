@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using cis237assignment6.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace cis237assignment6.Controllers
 {
@@ -18,9 +19,6 @@ namespace cis237assignment6.Controllers
         //Remake Index so that it has a sorting option bar, and when clicked will sort, first by ascending followed by descending 
         //Must also create hyperlinks for given sorting techniques 
         // GET: Beverages
-        //My way
-        //     public ActionResult Index(string sortOrder, string searchStringName, string searchStringPack, string searchStringPrice)
-        //Class way
         public ActionResult Index(string sortOrder)
         {
 
@@ -31,34 +29,17 @@ namespace cis237assignment6.Controllers
             ViewBag.SortByPriceP = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.SortByActiveP = sortOrder == "Active" ? "active_desc" : "Active";
 
-
-//My way
-
             //var to hold list in to sort but not change database
             var drinks = from x in db.Beverages
                          select x;
 
-            /*
-                        if (!String.IsNullOrEmpty(searchStringName))
-                        {
-                            drinks = drinks.Where(s => s.name.ToUpper().Contains(searchStringName.ToUpper()));
-                        }
-                        if (!String.IsNullOrEmpty(searchStringPack))
-                        {
-                            drinks = drinks.Where(s => s.pack.ToUpper().Contains(searchStringPack.ToUpper()));
-                        }
-                        if (!String.IsNullOrEmpty(searchStringPrice))
-                        {
-                            drinks = drinks.Where(s => s.price.ToString().Contains(searchStringPrice.ToUpper()));
-                        }
-
-            */
 
             string filterName = "";
             string filterPack = "";
             string filterPrice = "";
 
-
+            decimal cost = 3000;
+            //create separarte decimal fields then do parsing in here
             if(Session["name"] != null && !String.IsNullOrWhiteSpace((string)Session["name"]))
             {
                 filterName = (string)Session["name"];
@@ -70,11 +51,13 @@ namespace cis237assignment6.Controllers
             if (Session["price"] != null && !String.IsNullOrWhiteSpace((string)Session["price"]))
             {
                 filterPrice = (string)Session["price"];
+                cost = decimal.Parse(filterPrice);
             }
 
+
             drinks = drinks.Where(drink => drink.name.Contains(filterName) &&
-                                                                  drink.pack.Contains(filterPack));
-                                                           //       drink.price <= decimal.Parse(filterPrice));
+                                                                  drink.pack.Contains(filterPack) &&
+                                                                 drink.price <= cost);
 
 
             //switch statement using sortOrder to check for nulls, and decide which sort does what 
@@ -151,8 +134,8 @@ namespace cis237assignment6.Controllers
             //Imparitive logic check using if else statement
                 //Note:The problem is that this logic is repeated requiring updates in many places if the logic changes, which it inevitably will
                 //But the .NET framework provides a more declaritive approach called DataAnnotationAttributes, which applies ASP.NET MVC with all the
-                //nessacary metadata it needs to validate the model in one central place, But I wasn't able to figure it out
-            if (string.IsNullOrWhiteSpace(beverage.id))
+                //nessacary metadata it needs to validate the model in one central place, But I wasn't able to figure it out, Finally got it working with anotation models
+      /*      if (string.IsNullOrWhiteSpace(beverage.id))
             {
                 //Invalid
                 //Keep track of failures and then tell MVC about them adding them to the model state dictionary
@@ -179,7 +162,7 @@ namespace cis237assignment6.Controllers
             {
                 ModelState.AddModelError("price", "price is requried");
             }
-
+            */
             //Now we can refer to the errors in the view using the HTML.ValidationSummary
             if (ModelState.IsValid)
             {
@@ -188,6 +171,7 @@ namespace cis237assignment6.Controllers
                 return RedirectToAction("Index");
             }
             //If not valid then returns you to the original view for editing
+            
             return Create();
         }
 
@@ -265,41 +249,23 @@ namespace cis237assignment6.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
-        public ActionResult Filter()
-        {
-            return View();
-        }
         //Filter Method
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Filter(String name, String pack, String price)
+        public ActionResult Filter()
         {
             //Get the form data that was sent out of the Request object
             //the string that is used as a key to get the data matches the name
             //propertry of the form control. (for us this is the first parameter)
-         name = Request.Form.Get("name");
-         pack = Request.Form.Get("pack");
-         price = Request.Form.Get("price");
-            
-            //Store the form data into the session so that it can be retrived later
-            //on to filter the data
-            Session["name"] = name;
-            Session["pack"] = pack;
-            Session["price"] = price;
+        String name = Request.Form.Get("name");
+        String pack = Request.Form.Get("pack");
+        String price = Request.Form.Get("price");
 
-            if(!String.IsNullOrWhiteSpace((string)Session["name"]) && Session["name"] != null)
-            {
-                ModelState.AddModelError("name", "Please enter valid name");
-            }
-
-
-            //Redirect the user to the index page. We will do the work of actually filtering the list in the index method
-            if (ModelState.IsValid)
-            {
-                return RedirectToAction("Index");
-            }
-            return Filter();
+                Session["name"] = name;
+                Session["pack"] = pack;
+                Session["price"] = price;
+   
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

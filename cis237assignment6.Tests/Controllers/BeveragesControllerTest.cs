@@ -14,14 +14,18 @@ namespace cis237assignment6.Tests.Controllers
     [TestClass]
     public class BeveragesControllerTest
     {
+        //Testing the view returned by the controller
         [TestMethod]
         public void Test_Index()
         {
-            BeveragesController Drinks = new BeveragesController();
-            Beverage drink = new Beverage();
-            var drinkTest = Drinks.Index(drink.id) as ViewResult;
-            Beverage tester = (Beverage)drinkTest.ViewData.Model;
-            Assert.AreEqual(tester.id, drink.id);
+            //Arrange 
+            BeveragesController x = new BeveragesController();
+
+            //Act
+            ViewResult result = x.Index(null) as ViewResult;
+
+            //Assert
+            Assert.IsNotNull(result);
         }
 
         [TestMethod]
@@ -30,8 +34,9 @@ namespace cis237assignment6.Tests.Controllers
             BeveragesController ee = new BeveragesController();
             Beverage e = new Beverage();
             var drinkEdit = ee.Edit(e) as ViewResult;
-            Beverage tester = (Beverage)drinkEdit.ViewData.Model;
-            Assert.AreEqual(tester.name, e.name);
+     //       Beverage tester = (Beverage)drinkEdit.ViewData.Model;
+            Assert.AreEqual("Edit",drinkEdit.ViewName);
+            
         }
 
     }
