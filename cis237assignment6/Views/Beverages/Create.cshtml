@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create</h2>
+<h2 style="font-family:initial; color:wheat;font-size:24px">Create</h2>
 
 
 @using (Html.BeginForm()) 
@@ -15,10 +15,10 @@
         valiation they need to render the proper html -> Going into Models>Drinks.cs-->
 
     <div class="form-horizontal">
-        <h4>Beverage</h4>
+        <h4 style="font-family:initial; color:wheat;font-size:24px">Beverage</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
+        <div class="form-group" style="font-family:initial; color:wheat">
             @Html.LabelFor(model => model.id, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.id, new { htmlAttributes = new { @class = "form-control" } })
@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group"style="font-family:initial; color:wheat">
             @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group"style="font-family:initial; color:wheat">
             @Html.LabelFor(model => model.pack, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.pack, new { htmlAttributes = new { @class = "form-control" } })
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group"style="font-family:initial; color:wheat">
             @Html.LabelFor(model => model.price, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.price, new { htmlAttributes = new { @class = "form-control" } })
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group"style="font-family:initial; color:wheat">
             @Html.LabelFor(model => model.active, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="checkbox">
@@ -60,7 +60,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group"style="font-family:initial;">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>

@@ -17,9 +17,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("The Great Winers", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="container body-content"style="background: black;">
+            <div class="container body-content"">
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
@@ -35,7 +35,8 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
+   </div>
+    <div class="container body-content" style="background: black;">
         @RenderBody()
         <hr />
         <footer>

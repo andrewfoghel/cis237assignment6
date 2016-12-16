@@ -51,7 +51,15 @@ namespace cis237assignment6.Controllers
             if (Session["price"] != null && !String.IsNullOrWhiteSpace((string)Session["price"]))
             {
                 filterPrice = (string)Session["price"];
-                cost = decimal.Parse(filterPrice);
+                decimal number;
+                if(Decimal.TryParse(filterPrice,out number)){
+                    cost = decimal.Parse(filterPrice);
+                }
+                else
+                {
+                    ViewBag.errorMessage = "Invalid Parameter";
+                }
+                
             }
 
 
@@ -260,10 +268,12 @@ namespace cis237assignment6.Controllers
         String name = Request.Form.Get("name");
         String pack = Request.Form.Get("pack");
         String price = Request.Form.Get("price");
-
+            
                 Session["name"] = name;
                 Session["pack"] = pack;
                 Session["price"] = price;
+
+            
    
             return RedirectToAction("Index");
         }

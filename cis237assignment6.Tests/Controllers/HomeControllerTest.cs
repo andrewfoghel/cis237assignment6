@@ -50,5 +50,22 @@ namespace cis237assignment6.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
         }
+
+        //MY UNIT TESTS
+        [TestMethod]
+        public void Contact2()
+        {
+            HomeController controller = new HomeController();
+            ViewResult result = controller.Contact() as ViewResult;
+            Assert.AreEqual("Contact", result.ViewName);
+        }
+
+        [TestMethod]
+        public void About2()
+        {
+            HomeController controller = new HomeController();
+            ViewResult result = controller.About() as ViewResult;
+            Assert.AreEqual("About", result.ViewName);
+        }
     }
 }
